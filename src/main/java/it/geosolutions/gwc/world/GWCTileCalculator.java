@@ -17,8 +17,14 @@
 package it.geosolutions.gwc.world;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.geowebcache.grid.GridSet;
+import org.geowebcache.grid.GridSetBroker;
 
 import java.io.File;
+import java.util.Optional;
+import java.util.StringJoiner;
 
 /** {@link TileCalculator} for the GWC built-in tile layout */
 public class GWCTileCalculator implements TileCalculator {
@@ -32,17 +38,38 @@ public class GWCTileCalculator implements TileCalculator {
      * first token in the string is the gridset name (e.g. webbmercator), both followed by the zoom
      * level and an eventual parameter hash
      */
-    public String getGridsetId(File cacheChild) {
-        String[] parts = cacheChild.getName().split("_");
-        if (parts.length > 1 && "EPSG".equals(parts[0])) return "EPSG:" + parts[1];
-        return parts[0];
+    public GridSet getGridset(File cacheChild, GridSetBroker broker) {
+        String id = getGridsetId(cacheChild);
+        return Optional.ofNullable(id).map(i -> broker.get(i)).orElse(null);
+    }
+
+    private String getGridsetId(File cacheChild) {
+        String name = cacheChild.getName();
+        String[] parts = name.split("_");
+        if (parts.length <= 1) return null;
+        if (parts.length > 1) {
+            if ("EPSG".equals(parts[0])) return "EPSG:" + parts[1];
+        }
+        // there is for sure a zoom level, there might be a parameter id sha1
+        int limit = -1;
+        if (StringUtils.isNumeric(parts[parts.length - 1])) {
+            limit = parts.length - 1;
+        } else if (StringUtils.isNumeric(parts[parts.length - 2])) {
+            limit = parts.length - 2;
+        }
+        if (limit < 0) return null;
+        StringJoiner joiner = new StringJoiner("_");
+        for (int i = 0; i < limit; i++) {
+            joiner.add(parts[i]);
+        }
+        return joiner.toString();
     }
 
     /**
      * The file is always in "x_y.extension" form, and the zoom level is two levels up (the
      * directory in the middle is used to spread the files)
      */
-    public long[] getCoordinates(File tileFile) {
+    public long[] getCoordinates(File tileFile, GridSet gridSet) {
         String[] parts = FilenameUtils.getBaseName(tileFile.getName()).split("_");
         if (parts.length != 2) return null;
         long x = Long.valueOf(parts[0]);

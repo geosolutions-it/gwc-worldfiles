@@ -17,53 +17,60 @@
 package it.geosolutions.gwc.world;
 
 import org.geowebcache.config.DefaultGridsets;
+import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-public class GWCTileCalculatorTest {
+public class XYZTileCalculatorTest {
 
-    GWCTileCalculator calculator = new GWCTileCalculator();
+    XYZTileCalculator tileCalculator = new XYZTileCalculator();
     GridSetBroker broker = new GridSetBroker(Arrays.asList(new DefaultGridsets(true, true)));
+    GridSet gridSet = new DefaultGridsets(true, true).worldEpsg3857();
 
     @Test
     public void testGridsetId() {
         assertEquals(
                 "EPSG:900913",
-                calculator.getGridset(new File("/tmp/EPSG_900913_03"), broker).getName());
+                tileCalculator.getGridset(new File("/tmp/EPSG_900913"), broker).getName());
         assertEquals(
                 "EPSG:900913",
-                calculator.getGridset(new File("EPSG_900913_03_foobar"), broker).getName());
+                tileCalculator.getGridset(new File("EPSG_900913_foobar"), broker).getName());
         assertEquals(
-                "EPSG:4326", calculator.getGridset(new File("EPSG_4326_02"), broker).getName());
+                "EPSG:4326",
+                tileCalculator.getGridset(new File("EPSG_4326_params"), broker).getName());
         assertEquals(
                 "WebMercatorQuad",
-                calculator.getGridset(new File("WebMercatorQuad_02"), broker).getName());
+                tileCalculator.getGridset(new File("WebMercatorQuad"), broker).getName());
     }
 
     @Test
     public void testCoordinates() {
+        // y axis flip
         assertArrayEquals(
-                new long[] {1, 2, 3},
-                calculator.getCoordinates(new File("/EPSG_900913_03/foo_bar/01_02.png"), null));
+                new long[] {1, 5, 3},
+                tileCalculator.getCoordinates(new File("/EPSG_900913/3/1/2.png"), gridSet));
     }
 
     @Test
     public void testInvalidFileName() {
-        assertNull(calculator.getCoordinates(new File("/EPSG_900913_03/foo_bar/0102.png"), null));
+        assertNull(tileCalculator.getCoordinates(new File("/EPSG_900913/3/4/5/6.png"), null));
     }
 
     @Test
     public void testInvalidParentName() {
-        assertNull(calculator.getCoordinates(new File("/EPSG_900913/foo_bar/01_02.png"), null));
+        assertNull(tileCalculator.getCoordinates(new File("/EPSG_900913/3/abc/2.png"), null));
+        assertNull(tileCalculator.getCoordinates(new File("/EPSG_900913/abc/3/2.png"), null));
     }
 
     @Test
     public void testInvalidStructure() {
-        assertNull(calculator.getCoordinates(new File("/EPSG_900913/01_02.png"), null));
+        assertNull(tileCalculator.getCoordinates(new File("/EPSG_900913/01_02.png"), null));
     }
 }

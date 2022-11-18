@@ -61,7 +61,7 @@ class WorldFileWriter {
 
     String getWorldFile(File file) {
         // compute affine transform parameters
-        long[] coordinates = tileCalculator.getCoordinates(file);
+        long[] coordinates = tileCalculator.getCoordinates(file, gridSet);
         if (coordinates == null) return null;
 
         BoundingBox bbox = gridSet.boundsFromIndex(coordinates);

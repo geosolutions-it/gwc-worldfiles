@@ -21,6 +21,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.geowebcache.config.DefaultGridsets;
 import org.geowebcache.config.GridSetConfiguration;
 import org.geowebcache.config.XMLConfiguration;
+import org.geowebcache.grid.Grid;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.mime.ApplicationMime;
@@ -49,7 +50,7 @@ public class App {
 
     private static Printer printer = Printer.STD;
     private static GridSetBroker broker;
-    private static TileCalculator calculator;
+    private static TileCalculator calculator = new GWCTileCalculator();
 
     private static boolean overwrite;
 
@@ -64,7 +65,8 @@ public class App {
             printer.print("* -layout can be gwc (default), xyz, tms, blob");
             printer.print("* -config is the location of the GeoWebCache configuration file");
             printer.print("* -overwrite activates overwriting existing world files");
-            printer.print("* -j number of threads to use (defaults to the number of available cores");
+            printer.print(
+                    "* -j number of threads to use (defaults to the number of available cores");
             printer.print("* -q quiet output");
             printer.print(
                     "* layer_location is the path to the layer folder (normally has gridset specific subfolders as direct children). Must be last command line parameter");
@@ -72,12 +74,11 @@ public class App {
         }
 
         File configuration = null;
-        String layout = null;
         File cache;
         int parallelism = Runtime.getRuntime().availableProcessors();
         for (int i = 0; i < args.length - 1; i++) {
             String curr = args[i];
-            if (curr.equals("-layout")) layout = args[++i];
+            if (curr.equals("-layout")) calculator = getTileCalculator(args[++i]);
             else if (curr.equals("-config")) configuration = new File(args[++i]);
             else if (curr.equals("-j")) parallelism = Integer.parseInt(args[++i]);
             else if (curr.equals("-overwrite")) overwrite = true;
@@ -99,11 +100,6 @@ public class App {
             System.exit(-4);
         }
 
-        if (layout != null && !"gwc".equals(layout)) {
-            printer.err("Unknown layout type: " + layout);
-            System.exit(-4);
-        }
-
         if (parallelism < 1) {
             printer.err("Parallelism in -j must be at least 1");
             System.exit(-5);
@@ -111,7 +107,6 @@ public class App {
 
         // build the machinery to compute the world files
         broker = getGridsetBroker(configuration);
-        calculator = getTileCalculator(layout);
 
         // start the calculation
         printer.print("Computing world files with parallelism: " + parallelism);
@@ -134,19 +129,8 @@ public class App {
     }
 
     private static void computeWorldFiles(File gridsetDirectory) {
-        String gridsetId = calculator.getGridsetId(gridsetDirectory);
-        if (gridsetId == null)
-            printer.err(
-                    "Could not find a gridset identifier in  "
-                            + gridsetDirectory
-                            + ", skipping it");
-        GridSet gridSet = broker.get(gridsetId);
-        if (gridSet == null)
-            printer.err(
-                    "Unknown gridset id  "
-                            + gridsetId
-                            + ", skipping directory "
-                            + gridsetDirectory);
+        GridSet gridSet = calculator.getGridset(gridsetDirectory, broker);
+        if (gridSet == null) printer.err("Unknown gridset, skipping directory " + gridsetDirectory);
 
         printer.print("Creating world files in " + gridsetDirectory);
 
@@ -169,13 +153,18 @@ public class App {
     }
 
     private static boolean isTileFile(Path p) {
+        if (!Files.isRegularFile(p)) return false;
         String extension = FilenameUtils.getExtension(p.getFileName().toString());
         return TileExtensions.contains(extension);
     }
 
     private static TileCalculator getTileCalculator(String layout) {
         if (layout == null || "gwc".equals(layout)) return new GWCTileCalculator();
-        throw new IllegalArgumentException("Unknown layout " + layout);
+        if ("xyz".equals(layout)) return new XYZTileCalculator();
+
+        printer.err("Unknonw layout: " + layout);
+        System.exit(-2);
+        return null;
     }
 
     private static GridSetBroker getGridsetBroker(File configuration) {
