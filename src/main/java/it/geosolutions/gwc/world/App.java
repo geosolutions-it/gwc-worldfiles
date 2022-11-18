@@ -39,6 +39,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,15 +55,16 @@ public class App {
 
     private static AtomicLong counter = new AtomicLong(0);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         // in case of no arguments, exit and
         if (args.length == 0) {
             printer.print("Tool to generate world file sidecars for tile caches. Usage:\n");
             printer.print(
-                    "java -jar gwc-worldfiles.jar [-q] [-layout layout] [-config geowebcache.xml] layer_location\n");
+                    "java -jar gwc-worldfiles.jar [-q] [-j threads] [-layout layout] [-config geowebcache.xml] layer_location\n");
             printer.print("* -layout can be gwc (default), xyz, tms, blob");
             printer.print("* -config is the location of the GeoWebCache configuration file");
             printer.print("* -overwrite activates overwriting existing world files");
+            printer.print("* -j number of threads to use (defaults to the number of available cores");
             printer.print("* -q quiet output");
             printer.print(
                     "* layer_location is the path to the layer folder (normally has gridset specific subfolders as direct children). Must be last command line parameter");
@@ -71,10 +74,12 @@ public class App {
         File configuration = null;
         String layout = null;
         File cache;
+        int parallelism = Runtime.getRuntime().availableProcessors();
         for (int i = 0; i < args.length - 1; i++) {
             String curr = args[i];
-            if (curr.equals("-layout")) layout = args[i++];
-            else if (curr.equals("-config")) configuration = new File(args[i++]);
+            if (curr.equals("-layout")) layout = args[++i];
+            else if (curr.equals("-config")) configuration = new File(args[++i]);
+            else if (curr.equals("-j")) parallelism = Integer.parseInt(args[++i]);
             else if (curr.equals("-overwrite")) overwrite = true;
             else if (curr.equals("-q")) printer = Printer.QUIET;
             else {
@@ -99,15 +104,27 @@ public class App {
             System.exit(-4);
         }
 
+        if (parallelism < 1) {
+            printer.err("Parallelism in -j must be at least 1");
+            System.exit(-5);
+        }
+
         // build the machinery to compute the world files
         broker = getGridsetBroker(configuration);
         calculator = getTileCalculator(layout);
 
         // start the calculation
+        printer.print("Computing world files with parallelism: " + parallelism);
+        ForkJoinPool customPool = new ForkJoinPool(parallelism);
+        customPool.submit(() -> computeWorldFilesAllGridsets(cache)).get();
+    }
+
+    private static void computeWorldFilesAllGridsets(File cache) {
         long start = System.currentTimeMillis();
         Arrays.stream(cache.listFiles(f -> f.isDirectory()))
                 .parallel()
                 .forEach(f -> computeWorldFiles(f));
+        printer.print("\nDone!");
         printer.print(
                 "Created "
                         + counter
