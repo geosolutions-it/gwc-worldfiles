@@ -26,6 +26,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gwc.version>1.21.1</gwc.version>
+    <geotools.version>27.1</geotools.version>
   </properties>
 
   <dependencies>
@@ -33,6 +34,11 @@
       <groupId>org.geowebcache</groupId>
       <artifactId>gwc-core</artifactId>
       <version>${gwc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-epsg-wkt</artifactId>
+      <version>${geotools.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

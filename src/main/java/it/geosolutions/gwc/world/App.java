@@ -54,6 +54,8 @@ public class App {
 
     private static boolean overwrite;
 
+    private static boolean prj;
+
     private static AtomicLong counter = new AtomicLong(0);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -61,13 +63,14 @@ public class App {
         if (args.length == 0) {
             printer.print("Tool to generate world file sidecars for tile caches. Usage:\n");
             printer.print(
-                    "java -jar gwc-worldfiles.jar [-q] [-j threads] [-layout layout] [-config geowebcache.xml] layer_location\n");
-            printer.print("* -layout can be gwc (default), xyz, tms, blob");
-            printer.print("* -config is the location of the GeoWebCache configuration file");
-            printer.print("* -overwrite activates overwriting existing world files");
+                    "java -jar gwc-worldfiles.jar [-q] [-j threads] [-prj] [-overwrite] [-layout layout] [-config geowebcache.xml] layer_location\n");
+            printer.print("* -q quiet output");
             printer.print(
                     "* -j number of threads to use (defaults to the number of available cores");
-            printer.print("* -q quiet output");
+            printer.print("* -prj add a projection file (.prj) along with the world file");
+            printer.print("* -overwrite activates overwriting existing world files");
+            printer.print("* -layout can be gwc (default), xyz, tms, blob");
+            printer.print("* -config is the location of the GeoWebCache configuration file");
             printer.print(
                     "* layer_location is the path to the layer folder (normally has gridset specific subfolders as direct children). Must be last command line parameter");
             System.exit(-1);
@@ -76,11 +79,13 @@ public class App {
         File configuration = null;
         File cache;
         int parallelism = Runtime.getRuntime().availableProcessors();
+
         for (int i = 0; i < args.length - 1; i++) {
             String curr = args[i];
             if (curr.equals("-layout")) calculator = getTileCalculator(args[++i]);
             else if (curr.equals("-config")) configuration = new File(args[++i]);
             else if (curr.equals("-j")) parallelism = Integer.parseInt(args[++i]);
+            else if (curr.equals("-prj")) prj = true;
             else if (curr.equals("-overwrite")) overwrite = true;
             else if (curr.equals("-q")) printer = Printer.QUIET;
             else {
@@ -134,8 +139,8 @@ public class App {
 
         printer.print("Creating world files in " + gridsetDirectory);
 
-        WorldFileWriter writer = new WorldFileWriter(gridSet, calculator, overwrite);
         try {
+            WorldFileWriter writer = new WorldFileWriter(gridSet, calculator, overwrite, prj);
             Files.walk(gridsetDirectory.toPath(), calculator.getMaximumDepth())
                     .parallel()
                     .filter(App::isTileFile)
@@ -147,7 +152,7 @@ public class App {
                                         printer.print("World files generated: " + count);
                                 }
                             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
