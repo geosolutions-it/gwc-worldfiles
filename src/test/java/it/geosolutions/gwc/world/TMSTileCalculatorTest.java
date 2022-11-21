@@ -28,9 +28,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class XYZTileCalculatorTest {
+public class TMSTileCalculatorTest {
 
-    XYZTileCalculator tileCalculator = new XYZTileCalculator();
+    TMSTileCalculator tileCalculator = new TMSTileCalculator();
     GridSetBroker broker = new GridSetBroker(Arrays.asList(new DefaultGridsets(true, true)));
     GridSet gridSet = new DefaultGridsets(true, true).worldEpsg3857();
 
@@ -54,7 +54,7 @@ public class XYZTileCalculatorTest {
     public void testCoordinates() {
         // y axis flip
         assertArrayEquals(
-                new long[] {1, 5, 3},
+                new long[] {1, 2, 3},
                 tileCalculator.getCoordinates(new File("/EPSG_900913/3/1/2.png"), gridSet));
     }
 

@@ -166,6 +166,7 @@ public class App {
     private static TileCalculator getTileCalculator(String layout) {
         if (layout == null || "gwc".equals(layout)) return new GWCTileCalculator();
         if ("xyz".equals(layout)) return new XYZTileCalculator();
+        if ("tms".equals(layout)) return new TMSTileCalculator();
 
         printer.err("Unknonw layout: " + layout);
         System.exit(-2);

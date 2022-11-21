@@ -22,8 +22,8 @@ import org.geowebcache.grid.GridSetBroker;
 
 import java.io.File;
 
-/** {@link TileCalculator} for the XYZ tile layout in FileBlobStore */
-public class XYZTileCalculator implements TileCalculator {
+/** {@link TileCalculator} for the TMS tile layout in FileBlobStore */
+public class TMSTileCalculator implements TileCalculator {
 
     public int getMaximumDepth() {
         return 3;
@@ -55,9 +55,7 @@ public class XYZTileCalculator implements TileCalculator {
             long x = Long.valueOf(tileFile.getParentFile().getName());
             long y = Long.valueOf(FilenameUtils.getBaseName(tileFile.getName()));
 
-            long gwcy = gridSet.getGrid(z).getNumTilesHigh() - y - 1;
-
-            return new long[] {x, gwcy, z};
+            return new long[] {x, y, z};
         } catch (Exception e) {
             return null;
         }

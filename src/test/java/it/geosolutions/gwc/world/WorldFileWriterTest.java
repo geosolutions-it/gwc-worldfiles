@@ -19,6 +19,7 @@ package it.geosolutions.gwc.world;
 import org.geowebcache.config.DefaultGridsets;
 import org.geowebcache.grid.GridSet;
 import org.junit.Test;
+import org.opengis.referencing.FactoryException;
 
 import java.io.File;
 
@@ -27,10 +28,10 @@ import static org.junit.Assert.*;
 public class WorldFileWriterTest {
 
     @Test
-    public void testWorldFileContent() {
+    public void testWorldFileContent() throws FactoryException {
         GridSet gridSet = new DefaultGridsets(true, true).worldEpsg4326();
         TileCalculator tileCalculator = new GWCTileCalculator();
-        WorldFileWriter writer = new WorldFileWriter(gridSet, tileCalculator, false);
+        WorldFileWriter writer = new WorldFileWriter(gridSet, tileCalculator, false, false);
         String contents = writer.getWorldFile(new File("EPSG_4326_00/00_00/00_00.png"));
         String expected =
                 "0.703125\n" //
@@ -43,10 +44,10 @@ public class WorldFileWriterTest {
     }
 
     @Test
-    public void testWorldFileContent512() {
+    public void testWorldFileContent512() throws FactoryException {
         GridSet gridSet = new DefaultGridsets(true, true).worldEpsg4326x2();
         TileCalculator tileCalculator = new GWCTileCalculator();
-        WorldFileWriter writer = new WorldFileWriter(gridSet, tileCalculator, false);
+        WorldFileWriter writer = new WorldFileWriter(gridSet, tileCalculator, false, false);
         String contents = writer.getWorldFile(new File("EPSG_4326_00/00_00/00_00.png"));
         String expected =
                 "0.3515625\n" //
