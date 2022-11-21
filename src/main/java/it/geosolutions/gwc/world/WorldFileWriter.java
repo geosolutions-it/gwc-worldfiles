@@ -127,12 +127,13 @@ class WorldFileWriter {
     }
 
     String getWorldExtension(File file) {
-        String extension = FilenameUtils.getExtension(file.getName());
-        if (extension.equalsIgnoreCase("png")) return "pnw";
-        else if (extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("jpg"))
-            return "jgw";
-        else if (extension.equalsIgnoreCase("tiff") || extension.equalsIgnoreCase("tif"))
-            return "tfw";
+        // QGIS does not seem to recognize the world file unless it has wld extension
+//        String extension = FilenameUtils.getExtension(file.getName());
+//        if (extension.equalsIgnoreCase("png")) return "pnw";
+//        else if (extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("jpg"))
+//            return "jgw";
+//        else if (extension.equalsIgnoreCase("tiff") || extension.equalsIgnoreCase("tif"))
+//            return "tfw";
         return "wld";
     }
 }

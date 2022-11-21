@@ -167,6 +167,7 @@ public class App {
         if (layout == null || "gwc".equals(layout)) return new GWCTileCalculator();
         if ("xyz".equals(layout)) return new XYZTileCalculator();
         if ("tms".equals(layout)) return new TMSTileCalculator();
+        if ("blob".equals(layout)) return new BlobTileCalculator();
 
         printer.err("Unknonw layout: " + layout);
         System.exit(-2);
