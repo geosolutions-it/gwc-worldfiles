@@ -16,7 +16,6 @@
  */
 package it.geosolutions.gwc.world;
 
-import com.google.common.collect.Streams;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -41,7 +40,7 @@ class TileExtensions {
 
     private static Set<String> collectTileExtensions() {
         Stream<MimeType> mimes = getDeclaredMimeTypes(ImageMime.class);
-        mimes = Streams.concat(mimes, getDeclaredMimeTypes(ApplicationMime.class));
+        mimes = Stream.concat(mimes, getDeclaredMimeTypes(ApplicationMime.class));
         mimes = Stream.concat(mimes, getDeclaredMimeTypes(XMLMime.class));
         List<MimeType> mimeList = mimes.collect(Collectors.toList());
 
