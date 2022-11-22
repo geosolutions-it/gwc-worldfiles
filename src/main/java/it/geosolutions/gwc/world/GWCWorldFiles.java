@@ -49,7 +49,7 @@ public class GWCWorldFiles {
         if (args.length == 0) {
             printer.print("Tool to generate world file sidecars for tile caches. Usage:\n");
             printer.print(
-                    "java -jar gwc-worldfiles.jar [-q] [-j threads] [-prj] [-overwrite] [-layout layout] [-config geowebcache.xml] layer_location\n");
+                    "java -jar gwc-worldfiles-1.0.jar [-q] [-j threads] [-prj] [-overwrite] [-layout layout] [-config geowebcache.xml] layer_location\n");
             printer.print("* -q quiet output");
             printer.print(
                     "* -j number of threads to use (defaults to the number of available cores");
