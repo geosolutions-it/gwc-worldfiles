@@ -16,10 +16,9 @@
  */
 package it.geosolutions.gwc.world;
 
+import java.io.File;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
-
-import java.io.File;
 
 public interface TileCalculator {
 
@@ -30,9 +29,7 @@ public interface TileCalculator {
      */
     int getMaximumDepth();
 
-    /**
-     * The gridset included in the top level cache directory name
-     */
+    /** The gridset included in the top level cache directory name */
     GridSet getGridset(File cacheChild, GridSetBroker broker);
 
     /** GWC internal XYZ coordinates for a given file (TMS coordinates) */

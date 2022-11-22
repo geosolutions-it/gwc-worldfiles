@@ -16,11 +16,10 @@
  */
 package it.geosolutions.gwc.world;
 
+import java.io.File;
 import org.apache.commons.io.FilenameUtils;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
-
-import java.io.File;
 
 /** {@link TileCalculator} for the XYZ tile layout in FileBlobStore */
 public class XYZTileCalculator implements TileCalculator {
@@ -34,17 +33,15 @@ public class XYZTileCalculator implements TileCalculator {
         String name = cacheChild.getName();
         // we could have undercore in the gridset name, or it could be a replacement for ":"
         GridSet gridSet = broker.get(name);
-        if (gridSet == null)
-            gridSet = broker.get(name.replace("_", ":"));
-        
+        if (gridSet == null) gridSet = broker.get(name.replace("_", ":"));
+
         // do we have a parameters sha1 at the end maybe?
         if (gridSet == null && name.contains("_")) {
             name = name.substring(0, name.lastIndexOf("_"));
             gridSet = broker.get(name);
-            if (gridSet == null)
-                gridSet = broker.get(name.replace("_", ":"));
+            if (gridSet == null) gridSet = broker.get(name.replace("_", ":"));
         }
-        
+
         return gridSet;
     }
 

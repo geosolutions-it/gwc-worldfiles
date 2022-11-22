@@ -16,14 +16,6 @@
  */
 package it.geosolutions.gwc.world;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.geotools.referencing.CRS;
-import org.geowebcache.grid.BoundingBox;
-import org.geowebcache.grid.GridSet;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +23,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.geotools.referencing.CRS;
+import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridSet;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 class WorldFileWriter {
 
@@ -128,12 +127,12 @@ class WorldFileWriter {
 
     String getWorldExtension(File file) {
         // QGIS does not seem to recognize the world file unless it has wld extension
-//        String extension = FilenameUtils.getExtension(file.getName());
-//        if (extension.equalsIgnoreCase("png")) return "pnw";
-//        else if (extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("jpg"))
-//            return "jgw";
-//        else if (extension.equalsIgnoreCase("tiff") || extension.equalsIgnoreCase("tif"))
-//            return "tfw";
+        //        String extension = FilenameUtils.getExtension(file.getName());
+        //        if (extension.equalsIgnoreCase("png")) return "pnw";
+        //        else if (extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("jpg"))
+        //            return "jgw";
+        //        else if (extension.equalsIgnoreCase("tiff") || extension.equalsIgnoreCase("tif"))
+        //            return "tfw";
         return "wld";
     }
 }

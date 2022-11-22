@@ -16,15 +16,13 @@
  */
 package it.geosolutions.gwc.world;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.geowebcache.grid.GridSet;
-import org.geowebcache.grid.GridSetBroker;
-
 import java.io.File;
 import java.util.Optional;
 import java.util.StringJoiner;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.geowebcache.grid.GridSet;
+import org.geowebcache.grid.GridSetBroker;
 
 /** {@link TileCalculator} for the GWC built-in tile layout */
 public class GWCTileCalculator implements TileCalculator {

@@ -17,11 +17,6 @@
 package it.geosolutions.gwc.world;
 
 import com.google.common.collect.Streams;
-import org.geowebcache.mime.ApplicationMime;
-import org.geowebcache.mime.ImageMime;
-import org.geowebcache.mime.MimeType;
-import org.geowebcache.mime.XMLMime;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -30,6 +25,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.geowebcache.mime.ApplicationMime;
+import org.geowebcache.mime.ImageMime;
+import org.geowebcache.mime.MimeType;
+import org.geowebcache.mime.XMLMime;
 
 /**
  * Support class collecting all tile file extensions used by GeoWebCache in the various layouts

@@ -16,15 +16,14 @@
  */
 package it.geosolutions.gwc.world;
 
+import java.io.File;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FilenameUtils;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
 
-import java.io.File;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-
-/** {@link TileCalculator} for the blob storages (S3, Azure and so on) **/
+/** {@link TileCalculator} for the blob storages (S3, Azure and so on) * */
 public class BlobTileCalculator implements TileCalculator {
 
     public int getMaximumDepth() {
@@ -33,17 +32,17 @@ public class BlobTileCalculator implements TileCalculator {
 
     @Override
     public GridSet getGridset(File cacheChild, GridSetBroker broker) {
-        // gridset here is the directory name, but it could be URL-encoded when downloding 
+        // gridset here is the directory name, but it could be URL-encoded when downloding
         // files on local file system
         String name = cacheChild.getName();
         GridSet gridSet = broker.get(name);
         if (gridSet == null)
             try {
-            gridSet = broker.get(URLDecoder.decode(name, StandardCharsets.UTF_8.name()));
+                gridSet = broker.get(URLDecoder.decode(name, StandardCharsets.UTF_8.name()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        
+
         return gridSet;
     }
 

@@ -16,17 +16,14 @@
  */
 package it.geosolutions.gwc.world;
 
-import org.geowebcache.config.ConfigurationResourceProvider;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.geowebcache.config.ConfigurationResourceProvider;
 
-/**
- * Simplified resource provider for usage in this command line tool
- */
+/** Simplified resource provider for usage in this command line tool */
 class SingleFileResourceProvider implements ConfigurationResourceProvider {
 
     File file;

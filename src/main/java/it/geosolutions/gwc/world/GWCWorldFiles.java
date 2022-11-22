@@ -16,37 +16,23 @@
  */
 package it.geosolutions.gwc.world;
 
-import com.google.common.collect.Streams;
-import org.apache.commons.io.FilenameUtils;
-import org.geowebcache.config.DefaultGridsets;
-import org.geowebcache.config.GridSetConfiguration;
-import org.geowebcache.config.XMLConfiguration;
-import org.geowebcache.grid.Grid;
-import org.geowebcache.grid.GridSet;
-import org.geowebcache.grid.GridSetBroker;
-import org.geowebcache.mime.ApplicationMime;
-import org.geowebcache.mime.ImageMime;
-import org.geowebcache.mime.MimeType;
-import org.geowebcache.mime.XMLMime;
-
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.apache.commons.io.FilenameUtils;
+import org.geowebcache.config.DefaultGridsets;
+import org.geowebcache.config.GridSetConfiguration;
+import org.geowebcache.config.XMLConfiguration;
+import org.geowebcache.grid.GridSet;
+import org.geowebcache.grid.GridSetBroker;
 
-public class App {
+public class GWCWorldFiles {
 
     private static Printer printer = Printer.STD;
     private static GridSetBroker broker;
@@ -143,7 +129,7 @@ public class App {
             WorldFileWriter writer = new WorldFileWriter(gridSet, calculator, overwrite, prj);
             Files.walk(gridsetDirectory.toPath(), calculator.getMaximumDepth())
                     .parallel()
-                    .filter(App::isTileFile)
+                    .filter(GWCWorldFiles::isTileFile)
                     .forEach(
                             p -> {
                                 if (writer.write(p.toFile())) {

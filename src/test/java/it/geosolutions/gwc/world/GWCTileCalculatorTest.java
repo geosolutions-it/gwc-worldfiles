@@ -16,14 +16,13 @@
  */
 package it.geosolutions.gwc.world;
 
-import org.geowebcache.config.DefaultGridsets;
-import org.geowebcache.grid.GridSetBroker;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Arrays;
-
-import static org.junit.Assert.*;
+import org.geowebcache.config.DefaultGridsets;
+import org.geowebcache.grid.GridSetBroker;
+import org.junit.Test;
 
 public class GWCTileCalculatorTest {
 

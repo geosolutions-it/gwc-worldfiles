@@ -16,17 +16,16 @@
  */
 package it.geosolutions.gwc.world;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.File;
+import java.util.Arrays;
 import org.geowebcache.config.DefaultGridsets;
 import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.Arrays;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class BlobTileCalculatorTest {
 

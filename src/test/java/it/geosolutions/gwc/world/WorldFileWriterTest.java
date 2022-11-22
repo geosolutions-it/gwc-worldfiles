@@ -16,14 +16,13 @@
  */
 package it.geosolutions.gwc.world;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
 import org.geowebcache.config.DefaultGridsets;
 import org.geowebcache.grid.GridSet;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
-
-import java.io.File;
-
-import static org.junit.Assert.*;
 
 public class WorldFileWriterTest {
 
